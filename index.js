@@ -17,13 +17,18 @@ connectDB();
 connectCloudinary();
 
 //autorizamos a realizar peticiones al back
-app.use(cors());
-// Permite el dominio específico del frontend en producción
-// app.use(cors({
-//     origin: 'https://despliegue-front-theta.vercel.app',
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     allowedHeaders: ['Content-Type', 'Authorization']
-// }));
+const corsOptions = {
+    origin: 'https://bono-booking-front.vercel.app',
+    optionsSuccessStatus: 200
+  };
+app.use(cors(corsOptions));
+
+// Encabezados adicionales para CORS
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://bono-booking-front.vercel.app');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
 
 // para que pueda ser capaz de entender el formato .json
 app.use(express.json());
@@ -38,6 +43,5 @@ app.use("*", (req, res, next) => {
 })
 
 app.listen(3000, () => {
-    // console.log("El servidor está funcionando en http://localhost:3000");
-    console.log("https://proyecto-final-back-sigma.vercel.app/");
+    console.log("El servidor está funcionando");
 })
