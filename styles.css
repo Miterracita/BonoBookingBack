@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+:root {
+    --background-one:#FC4100;
+    --background-two: #FFC55A;
+    --background-three:#00215E;
+    --background-four:#2C4E80;
+}
+
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: "Luckiest Guy", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+  /* font-family: "Lexend", sans-serif;
+  font-weight: <weight>; */
