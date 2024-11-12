@@ -23,13 +23,6 @@ const corsOptions = {
   };
 app.use(cors(corsOptions));
 
-// Encabezados adicionales para CORS
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://bono-booking-front.vercel.app');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
-
 // para que pueda ser capaz de entender el formato .json
 app.use(express.json());
 
