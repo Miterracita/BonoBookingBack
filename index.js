@@ -18,8 +18,9 @@ connectCloudinary();
 
 //autorizamos a realizar peticiones al back
 const corsOptions = {
-    origin: 'https://bono-booking-front.vercel.app',
-    optionsSuccessStatus: 200
+    origin: 'https://bono-booking-front.vercel.app', // Permitir solo este dominio
+    methods: 'GET,POST,PUT,DELETE', // Métodos permitidos
+    allowedHeaders: 'Content-Type,Authorization', // Cabeceras permitidas
   };
 app.use(cors(corsOptions));
 
