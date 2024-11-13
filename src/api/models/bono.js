@@ -5,9 +5,9 @@ const bonoSchema = new mongoose.Schema(
   {
     name: { type: String, trim: true, required: true, default: 'Bono' },
     type: { 
-      type: String, 
+      type: Number, 
       required: true, 
-      enum: ['5', '10', '20'] // añadir más tipos
+      enum: [5, 10, 20] // añadir más tipos
     },
     active: { type: Boolean, required: true, default: true },
     code: { type: String, trim: true, required: true, default: generateCode },

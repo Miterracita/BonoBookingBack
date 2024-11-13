@@ -77,37 +77,6 @@ const updateBono = async (req, res, next) => {
   }
 }
 
-// CONTROLADOR PARA FILTROS DEL FRONT - REALIZAR BÚSQUEDA POR codigo o usuario asignado
-// const searchBonos = async (req, res, next) => {
-//   const { code, user } = req.query;
-
-//   //primero comprobamos que no envien ambos campos, sólo uno
-//   if (code && user) {
-//     return res.status(400).json({
-//       message: "Solo se puede realizar la búsqueda por 'code' o 'user', no ambos.",
-//     });
-//   }
-
-//  // Inicia el objeto de filtro vacío
-//   const filter = {};
-
-//   if (code) {
-//     // Si el usuario escribió algo en el campo de 'code', añadimos esa condición al filtro
-//       filter.code = { $regex: code, $options: 'i' }; // Búsqueda insensible a mayúsculas
-//   }
-//   if (user) {
-//     // Si el usuario escribió algo en el campo de 'user', añadimos esa condición al filtro
-//       filter.user = user; // Búsqueda directa por ObjectId
-//   }
-
-//   try {
-//       const bonos = await Bono.find(filter);
-//       res.status(200).json(bonos);
-//   } catch (error) {
-//       res.status(500).json({ message: "Error en la búsqueda", error: error.message });
-//   }
-// };
-
 const searchBonos = async (req, res, next) => {
   const { code, user } = req.query;
 
@@ -153,6 +122,20 @@ const searchBonos = async (req, res, next) => {
   }
 };
 
+// Controlador para obtener los bonos de un usuario específico
+const getBonosByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const bonos = await Bono.find({ user: userId }).populate('user'); // Ajusta el modelo según sea necesario
+    if (!bonos) {
+      return res.status(404).json({ message: 'No se encontraron bonos para este usuario.' });
+    }
+    return res.status(200).json(bonos);
+  } catch (error) {
+    return res.status(500).json({ message: 'Error al obtener los bonos del usuario', error: error.message });
+  }
+};
+
 
 module.exports = { 
   newBono,
@@ -160,4 +143,5 @@ module.exports = {
   getBonos,
   updateBono,
   searchBonos,
+  getBonosByUserId
 };

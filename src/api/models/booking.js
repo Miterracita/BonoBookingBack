@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+const { preSave, generateCode } = require('../../middlewares/bookingsMiddlewares');
 
 const bookingSchema = new mongoose.Schema({
   // fecha: { type: Date, required: true },
-  localizador: { type: String, required: true },
+  localizador: { type: String, trim: true, required: true, default: generateCode },
   evento: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
   bono: { type: mongoose.Schema.Types.ObjectId, ref: 'Bono', required: true },
   // Puedes agregar más campos relevantes como duración, tipo de entreno, etc.
@@ -29,6 +30,9 @@ const bookingSchema = new mongoose.Schema({
       next(error); // Pasar el error al siguiente middleware
     }
   });
-  
+
+// aplicar los middlewares
+bookingSchema.pre('save', preSave);
+
 const Booking = mongoose.model('Booking', bookingSchema);
 module.exports = Booking;

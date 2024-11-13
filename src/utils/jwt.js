@@ -12,4 +12,25 @@ const verifyJwt = (token) => {
     return jwt.verify(token, process.env.JWT_SECRET);
 }
 
-module.exports = { generateSing, verifyJwt }
+//toma el id del token del usuario que se ha identificado
+const authenticateToken = (req, res, next) => {
+    // Obtener el token del header Authorization
+    const token = req.headers['authorization'] && req.headers['authorization'].split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token no proporcionado' });
+    }
+
+    // Verificar el token
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Token no válido' });
+        }
+
+        // Almacenar el id del usuario decodificado en la request
+        req.userId = decoded.id;
+        next();
+    });
+};
+
+module.exports = { generateSing, verifyJwt, authenticateToken }

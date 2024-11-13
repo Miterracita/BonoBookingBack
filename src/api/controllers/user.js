@@ -203,6 +203,26 @@ const searchUsers = async (req, res, next) => {
 };
 
 
+const getUserById = async (req, res) => {
+  try {
+      const user = await User.findById(req.userId);  // Buscar al usuario en la base de datos usando su id
+
+      if (!user) {
+          return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+
+      // Excluir la contraseña del usuario antes de devolver los datos
+      const { password, ...userData } = user.toObject();
+      return res.json(userData);  // Devuelve los datos del usuario (sin la contraseña)
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Error al obtener los datos del usuario' });
+  }
+};
+
+
+
+
 module.exports = { 
   registro,
   login,
@@ -210,4 +230,5 @@ module.exports = {
   getUsers,
   updateUser,
   searchUsers,
+  getUserById,
 };

@@ -1,5 +1,5 @@
 // const { isAuth, isAdmin } = require("../../middlewares/auth");
-const { newBono, deleteBono, getBonos, updateBono, searchBonos } = require("../controllers/bono");
+const { newBono, deleteBono, getBonos, updateBono, searchBonos, getBonosByUserId } = require("../controllers/bono");
 const bonoRoutes = require("express").Router();
 
 bonoRoutes.post("/new-bono", newBono);
@@ -11,5 +11,6 @@ bonoRoutes.get("/bono-list", getBonos);
 
 //rutas para filtros
 bonoRoutes.get("/search", searchBonos);
+bonoRoutes.get("/:userId", getBonosByUserId);
 
 module.exports = bonoRoutes;

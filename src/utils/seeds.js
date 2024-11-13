@@ -110,27 +110,40 @@ const insertarDatos = async () => {
             }
             await Bono.create(bonoData);
         }
-        console.log('Bonos insertados');
+        const bonos = await Bono.insertMany(bonosCSV);
+        console.log(`Bonos insertados: ${bonos.length}`);
 
         // Insertar eventos
         const eventos = await Evento.insertMany(eventosCSV);
         console.log(`Eventos insertados: ${eventos.length}`);
 
-        // Insertar reservas
-        for (let reservaData of reservasCSV) {
-            const bono = await Bono.findById(reservaData.bono);
-            const evento = await Evento.findById(reservaData.evento);
 
-            if (bono && evento) {
-                const reserva = new Booking({
-                    localizador: reservaData.localizador,
-                    evento: evento._id,
-                    bono: bono._id
-                });
-                await reserva.save();
-            }
-        }
-        console.log('Reservas insertadas');
+        //al lanzar el seeds aunque se le asignen ids la bbdd crea nuevos por lo que no mantiene las relaciones entre tablas,
+        // no se puede lanzar la parte de bookings poruqe al no mantener los ids peta
+        
+        // for (let reservaData of reservasCSV) {
+        //     // Validar el ID de bono y evento
+        //     if (reservaData.bono && reservaData.evento) {
+        //         // Buscar bono y evento en la base de datos solo si los IDs son válidos     
+        //         const bono = await Bono.findById(reservaData.bono);
+        //         const evento = await Evento.findById(reservaData.evento);
+
+        //         if (bono && evento) {
+        //             const reserva = new Booking({
+        //                 localizador: reservaData.localizador,
+        //                 evento: evento._id,
+        //                 bono: bono._id
+        //             });
+        //             await reserva.save();
+        //             contadorReservas++;
+        //         }
+        //     } else {
+        //         console.log(`ID inválido encontrado: Bono ID - ${reservaData.bono}, Evento ID - ${reservaData.evento}`);
+        //     }
+        // }
+
+        // console.log(`Reservas insertadas`);
+
 
         // Cerrar conexión
         mongoose.connection.close();
