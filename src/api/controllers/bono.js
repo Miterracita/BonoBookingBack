@@ -126,7 +126,12 @@ const searchBonos = async (req, res, next) => {
 const getBonosByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
-    const bonos = await Bono.find({ user: userId }).populate('user'); // Ajusta el modelo según sea necesario
+
+    // Consulta para obtener los bonos con el usuario y las reservas
+    const bonos = await Bono.find({ user: userId })
+      .populate('user') // Poblamos el campo 'user' con los detalles del usuario
+      .populate('reservations'); // Poblamos el campo 'reservations' con las reservas asociadas
+
     if (!bonos) {
       return res.status(404).json({ message: 'No se encontraron bonos para este usuario.' });
     }
