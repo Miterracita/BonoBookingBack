@@ -3,7 +3,8 @@ const { newReserva, getReservas, updateReserva, deleteReserva } = require("../co
 const bookingRoutes = require("express").Router();
 
 bookingRoutes.post("/new-booking", newReserva);
-bookingRoutes.delete("/:id", [isAdmin], deleteReserva);
+// bookingRoutes.delete("/:id", [isAdmin], deleteReserva);
+bookingRoutes.delete("/:id", deleteReserva);
 bookingRoutes.put("/:id", [isAuth], updateReserva);
 bookingRoutes.get("/bookings-list", getReservas);
 

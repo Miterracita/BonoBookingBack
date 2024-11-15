@@ -34,7 +34,7 @@ const newReserva = async (req, res) => {
 
 const getReservas = async (req, res) => {
   try {
-    const reservas = await Booking.find().populate('bono');
+    const reservas = await Booking.find().populate('bono').populate('evento');;
     return res.status(200).json(reservas);
   } catch (error) {
     console.error("Error en getReservas:", error);
@@ -67,16 +67,32 @@ const getReservas = async (req, res) => {
   const deleteReserva = async (req, res) => {
     try {
       const { id } = req.params;
+      const { bonoId } = req.body; //obtiene el bono del cuerpo de la solicitud
+      
       const reservaEliminada = await Booking.findByIdAndDelete(id);
   
       if (!reservaEliminada) {
         return res.status(404).json({ message: "Reserva no encontrada." });
       }
-  
+
+      // Intentar actualizar el bono asociado
+      if (bonoId) {
+          const bonoActualizado = await Bono.findByIdAndUpdate(
+              bonoId,
+              { $inc: { availableUses: 1 } }, // Incrementa el campo 'cantidad' en 1
+              { new: true } // Retorna el bono actualizado
+          );
+          console.log("bonoId actualizado:", bonoActualizado); // Verifica el bonoId
+
+          if (!bonoActualizado) {
+              console.log(`No se pudo actualizar el bono con ID: ${bonoId}`);
+          }
+      }
+
       return res.status(200).json({ message: `La reserva se ha eliminado correctamente.` });
     } catch (error) {
       console.error("Error en deleteReserva:", error);
-      return res.status(500).json({ message: "Error al eliminar la reserva", error: error.message });
+      return res.status(500).json({ message: "Error al eliminar la reserva o actualizar el bono", error: error.message });
     }
   };
 
