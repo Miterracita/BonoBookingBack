@@ -1,34 +1,46 @@
 const Booking = require("../models/booking");
+const Bono = require("../models/bono");
 
 const newReserva = async (req, res) => {
   try {
-    const { fecha, bono } = req.body;
+    const { event, bono } = req.body;
 
     // Validación de datos
-    if (!fecha || !bono) {
+    if (!event || !bono) {
       return res.status(400).json({ message: "Faltan datos requeridos." });
     }
 
+    // Verificar que event y bono son objetos completos
+    if (typeof event !== 'object' || typeof bono !== 'object') {
+      return res.status(400).json({ message: "Datos de evento o bono incorrectos." });
+    }
+
     const nuevaReserva = new Booking({
-      fecha,
-      bono,
+      evento: event,
+      bono: bono     
     });
 
-    const reservaGuardada = await nuevaReserva.save();
-    return res.status(201).json(reservaGuardada);
+    const reservaGuardada = await nuevaReserva.save();  // Crear la reserva y guardarla en la base de datos
+
+    // Populate evento y bono
+    const reservaCompleta = await Booking.findById(reservaGuardada._id).populate('evento').populate('bono');
+
+    return res.status(201).json(reservaCompleta);
   } catch (error) {
+    console.error("Error en newReserva:", error); // Log para depuración
     return res.status(500).json({ message: "Error al crear la reserva", error: error.message });
   }
 };
 
 const getReservas = async (req, res) => {
-    try {
-      const reservas = await Booking.find().populate('bono'); // Poblar información del bono
-      return res.status(200).json(reservas);
-    } catch (error) {
-      return res.status(500).json({ message: "Error al obtener las reservas", error: error.message });
-    }
-  };
+  try {
+    const reservas = await Booking.find().populate('bono');
+    return res.status(200).json(reservas);
+  } catch (error) {
+    console.error("Error en getReservas:", error);
+    return res.status(500).json({ message: "Error al obtener las reservas", error: error.message });
+  }
+};
   
   const updateReserva = async (req, res) => {
     try {
@@ -36,7 +48,7 @@ const getReservas = async (req, res) => {
       const updatedData = req.body;
   
       // Validación de datos
-      if (!updatedData.fecha && !updatedData.bono) {
+      if (!updatedData.eventId && !updatedData.bonoId) {
         return res.status(400).json({ message: "Al menos un campo debe ser proporcionado para actualizar." });
       }
   
@@ -63,6 +75,7 @@ const getReservas = async (req, res) => {
   
       return res.status(200).json({ message: `La reserva se ha eliminado correctamente.` });
     } catch (error) {
+      console.error("Error en deleteReserva:", error);
       return res.status(500).json({ message: "Error al eliminar la reserva", error: error.message });
     }
   };

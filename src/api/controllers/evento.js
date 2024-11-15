@@ -85,10 +85,29 @@ const searchBonos = async (req, res, next) => {
     }
 }
 
+// Función para recuperar el evento por ID
+const getEventById = async (req, res, next) => {
+  const { id } = req.params; // Obtenemos el ID desde los parámetros de la URL
+
+  try {
+      const event = await Evento.findById(id);
+
+      if (!event) {
+          return res.status(404).json({ error: 'Evento no encontrado' });
+      }
+
+      res.status(200).json(event); // Enviamos el evento completo al frontend
+  } catch (error) {
+      console.error('Error al obtener el evento:', error);
+      res.status(500).json({ error: 'Error al obtener el evento' });
+  }
+};
+
 module.exports = {
   newEvent,
   getEvents,
   updateEvents,
   deleteEvents,
   searchBonos,
+  getEventById
 };
